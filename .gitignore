@@ -1,0 +1,19 @@
+# Build results
+[Dd]ebug/
+[Rr]elease/
+[Bb]in/
+[Oo]bj/
+publish/
+
+# IDEs
+.vs/
+.idea/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# System Files
+.DS_Store
+Thumbs.db
+crash.log

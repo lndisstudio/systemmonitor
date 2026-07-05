@@ -1,0 +1,32 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SystemMonitor.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" 
+        x:Class="SystemMonitor.Views.LogWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="LOG - System Monitor"
+        Width="280" Height="350"
+        MinWidth="200" MinHeight="200"
+        Background="#1E1E2E"
+        Foreground="#CDD6F4">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#313244" Padding="10,6">
+            <Grid ColumnDefinitions="*,Auto">
+                <TextBlock Text="LOG" FontSize="12" FontWeight="Bold" Foreground="#89B4FA"/>
+                <Button Grid.Column="1" Content="X" Click="CloseClick"
+                        Background="#F38BA8" Foreground="#1E1E2E" 
+                        Padding="6,2" CornerRadius="3" FontSize="10"/>
+            </Grid>
+        </Border>
+
+        <!-- Log Content -->
+        <ScrollViewer Grid.Row="1" Padding="8">
+            <TextBlock Text="{Binding LogText}" FontSize="9" Foreground="#A6ADC8" 
+                       TextWrapping="Wrap"/>
+        </ScrollViewer>
+    </Grid>
+</Window>

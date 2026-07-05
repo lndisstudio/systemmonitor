@@ -1,0 +1,222 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:SystemMonitor.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="320" d:DesignHeight="600"
+        x:Class="SystemMonitor.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="System Monitor"
+        Width="320" Height="600"
+        MinWidth="300" MinHeight="500"
+        Background="#1E1E2E"
+        Foreground="#CDD6F4">
+
+    <Design.DataContext>
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+    <Grid RowDefinitions="Auto,Auto,*">
+        <!-- Menu Strip -->
+        <Menu Grid.Row="0" Background="#313244" Foreground="#CDD6F4" Height="28">
+            <MenuItem Header="Ayarlar">
+                <MenuItem Header="Yenileme suresi">
+                    <MenuItem Header="1 saniye" Command="{Binding SetRefreshIntervalCommand}" CommandParameter="1"/>
+                    <MenuItem Header="2 saniye" Command="{Binding SetRefreshIntervalCommand}" CommandParameter="2"/>
+                    <MenuItem Header="5 saniye" Command="{Binding SetRefreshIntervalCommand}" CommandParameter="5"/>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Islemler">
+                <MenuItem Header="Yenile" Command="{Binding UpdateSystemInfoCommand}"/>
+                <MenuItem Header="Baslat" Command="{Binding StartMonitoringCommand}"/>
+                <MenuItem Header="Durdur" Command="{Binding StopMonitoringCommand}"/>
+                <MenuItem Header="Log goster" Command="{Binding ShowLogCommand}"/>
+                <MenuItem Header="Log temizle" Command="{Binding ClearLogCommand}"/>
+                <MenuItem Header="Cikis" Command="{Binding ExitCommand}"/>
+            </MenuItem>
+        </Menu>
+
+        <!-- Compact Header -->
+        <Border Grid.Row="1" Background="#313244" Padding="10,6">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="6">
+                    <TextBlock Text="⚡" FontSize="16" Foreground="#89B4FA" VerticalAlignment="Center" Margin="0,0,4,0"/>
+                    <TextBlock Text="System Monitor" FontSize="11" FontWeight="Bold" 
+                               Foreground="#CDD6F4" VerticalAlignment="Center"/>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal" Spacing="3">
+                    <Button Content="▶" Command="{Binding StartMonitoringCommand}"
+                            Background="#89B4FA" Foreground="#1E1E2E" Padding="5,2"
+                            CornerRadius="3" FontSize="9" Width="24" Height="22"/>
+                    <Button Content="⏸" Command="{Binding StopMonitoringCommand}"
+                            Background="#F38BA8" Foreground="#1E1E2E" Padding="5,2"
+                            CornerRadius="3" FontSize="9" Width="24" Height="22"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Sidebar Content -->
+        <ScrollViewer Grid.Row="2" Padding="6">
+            <StackPanel Spacing="6" Margin="2">
+                
+                <!-- CPU Card -->
+                <Border Background="#313244" CornerRadius="6" Padding="8">
+                    <StackPanel Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="CPU" FontSize="11" FontWeight="Bold" Foreground="#CBA6F7"/>
+                            <TextBlock Grid.Column="1" Text="{Binding CpuHealth}" FontSize="9" Foreground="#A6E3A1"/>
+                        </Grid>
+                        <TextBlock Text="{Binding CpuName}" FontSize="8" Foreground="#B4BEFE" TextWrapping="Wrap" MaxLines="1" Margin="0,0,0,4"/>
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                            <StackPanel Grid.Column="0" Grid.Row="0">
+                                <TextBlock Text="Usage" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding CpuUsage, StringFormat={}{0}%}" FontSize="12" FontWeight="Bold" Foreground="#FAB387" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0">
+                                <TextBlock Text="Temp" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding CpuTemperatureDisplay}" FontSize="12" FontWeight="Bold" Foreground="#F38BA8" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Grid.Row="0">
+                                <TextBlock Text="Freq" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding CpuFrequency, StringFormat={}{0:F1}G}" FontSize="12" FontWeight="Bold" Foreground="#89B4FA" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <ProgressBar Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" 
+                                      Value="{Binding CpuUsage}" Maximum="100" Height="3" CornerRadius="2" 
+                                      Background="#45475A" Foreground="#FAB387" Margin="0,2,0,0"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Memory Card -->
+                <Border Background="#313244" CornerRadius="6" Padding="8">
+                    <StackPanel Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="RAM" FontSize="11" FontWeight="Bold" Foreground="#89B4FA"/>
+                            <TextBlock Grid.Column="1" Text="{Binding MemoryHealth}" FontSize="9" Foreground="#A6E3A1"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                            <StackPanel Grid.Column="0" Grid.Row="0">
+                                <TextBlock Text="Used" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding MemoryUsagePercent, StringFormat={}{0}%}" FontSize="12" FontWeight="Bold" Foreground="#FAB387" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0">
+                                <TextBlock Text="Speed" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding MemorySpeed, StringFormat={}{0:F0}}" FontSize="12" FontWeight="Bold" Foreground="#89B4FA" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Grid.Row="0">
+                                <TextBlock Text="Type" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding MemoryType}" FontSize="12" FontWeight="Bold" Foreground="#CBA6F7" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <ProgressBar Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" 
+                                      Value="{Binding MemoryUsagePercent}" Maximum="100" Height="3" CornerRadius="2" 
+                                      Background="#45475A" Foreground="#89B4FA" Margin="0,2,0,0"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- GPU Card -->
+                <Border Background="#313244" CornerRadius="6" Padding="8">
+                    <StackPanel Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="GPU" FontSize="11" FontWeight="Bold" Foreground="#F38BA8"/>
+                            <TextBlock Grid.Column="1" Text="{Binding GpuHealth}" FontSize="9" Foreground="#A6E3A1"/>
+                        </Grid>
+                        <TextBlock Text="{Binding GpuName}" FontSize="8" Foreground="#B4BEFE" TextWrapping="Wrap" MaxLines="1" Margin="0,0,0,4"/>
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                            <StackPanel Grid.Column="0" Grid.Row="0">
+                                <TextBlock Text="Load" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding GpuUsage, StringFormat={}{0}%}" FontSize="12" FontWeight="Bold" Foreground="#FAB387" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0">
+                                <TextBlock Text="Temp" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding GpuTemperatureDisplay}" FontSize="12" FontWeight="Bold" Foreground="#F38BA8" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Grid.Row="0">
+                                <TextBlock Text="Power" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding GpuPowerUsage, StringFormat={}{0:F0}W}" FontSize="12" FontWeight="Bold" Foreground="#F9E2AF" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <ProgressBar Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" 
+                                      Value="{Binding GpuUsage}" Maximum="100" Height="3" CornerRadius="2" 
+                                      Background="#45475A" Foreground="#F38BA8" Margin="0,2,0,0"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Disk Card -->
+                <Border Background="#313244" CornerRadius="6" Padding="8">
+                    <StackPanel Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Disk" FontSize="11" FontWeight="Bold" Foreground="#A6E3A1"/>
+                            <TextBlock Grid.Column="1" Text="{Binding DiskHealth}" FontSize="9" Foreground="#A6E3A1"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto">
+                            <StackPanel Grid.Column="0" Grid.Row="0">
+                                <TextBlock Text="Used" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding DiskUsagePercent, StringFormat={}{0}%}" FontSize="12" FontWeight="Bold" Foreground="#FAB387" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0">
+                                <TextBlock Text="Temp" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding DiskTemperatureDisplay}" FontSize="12" FontWeight="Bold" Foreground="#F38BA8" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Grid.Row="0">
+                                <TextBlock Text="Name" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding DiskName}" FontSize="12" FontWeight="Bold" Foreground="#A6E3A1" Margin="0,0,0,2"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- PSU Card -->
+                <Border Background="#313244" CornerRadius="6" Padding="8">
+                    <StackPanel Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="PSU" FontSize="11" FontWeight="Bold" Foreground="#FAB387"/>
+                            <TextBlock Grid.Column="1" Text="{Binding PsuHealth}" FontSize="9" Foreground="#A6E3A1"/>
+                        </Grid>
+                        <Grid ColumnDefinitions="*,*,*" RowDefinitions="Auto,Auto">
+                            <StackPanel Grid.Column="0" Grid.Row="0">
+                                <TextBlock Text="Watt" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding PsuWattage, StringFormat={}{0}W}" FontSize="12" FontWeight="Bold" Foreground="#FAB387" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0">
+                                <TextBlock Text="Load" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding PsuLoadPercent, StringFormat={}{0}%}" FontSize="12" FontWeight="Bold" Foreground="#F38BA8" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Grid.Row="0">
+                                <TextBlock Text="Eff" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding PsuEfficiency, StringFormat={}{0:F0}%}" FontSize="12" FontWeight="Bold" Foreground="#A6E3A1" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <ProgressBar Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" 
+                                      Value="{Binding PsuLoadPercent}" Maximum="100" Height="3" CornerRadius="2" 
+                                      Background="#45475A" Foreground="#FAB387" Margin="0,2,0,0"/>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- Motherboard Card -->
+                <Border Background="#313244" CornerRadius="6" Padding="8">
+                    <StackPanel Spacing="4">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="Motherboard" FontSize="11" FontWeight="Bold" Foreground="#F9E2AF"/>
+                            <TextBlock Grid.Column="1" Text="{Binding MotherboardHealth}" FontSize="9" Foreground="#A6E3A1"/>
+                        </Grid>
+                        <TextBlock Text="{Binding MotherboardModel}" FontSize="8" Foreground="#B4BEFE" TextWrapping="Wrap" MaxLines="1" Margin="0,0,0,4"/>
+                        <Grid ColumnDefinitions="*,*" RowDefinitions="Auto">
+                            <StackPanel Grid.Column="0" Grid.Row="0">
+                                <TextBlock Text="BIOS" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding BiosVersion}" FontSize="10" Foreground="#CDD6F4" Margin="0,0,0,2"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Grid.Row="0">
+                                <TextBlock Text="Temp" FontSize="7" Foreground="#6C7086"/>
+                                <TextBlock Text="{Binding MotherboardTemperatureDisplay}" FontSize="12" FontWeight="Bold" Foreground="#F38BA8" Margin="0,0,0,2"/>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>
